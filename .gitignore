@@ -28,3 +28,4 @@ ingester-*.tar
 /priv/static/
 .elixir_ls/
 .DS_Store
+grafana.db

@@ -20,6 +20,7 @@ services:
       - GF_INSTALL_PLUGINS=natel-discrete-panel
     volumes:
       - grafanadata:/var/lib/grafana
+      - ./grafana.db:/var/lib/grafana/grafana.db
   ingester:
     build: .
     restart: always

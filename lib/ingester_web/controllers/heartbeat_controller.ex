@@ -1,0 +1,21 @@
+defmodule IngesterWeb.HeartbeatController do
+  use IngesterWeb, :controller
+
+  def create(conn, %{"_json" => heartbeats}) do
+    heartbeats =
+      Enum.map(heartbeats, fn %{"time" => time, "user_agent" => user_agent} = hb ->
+        ["wakatime/" <> _wakatime_version, os, "Python" <> _python_version, editor, _extension] =
+          String.split(user_agent, " ")
+
+        os = String.replace(os, ["(", ")"], "")
+
+        %{hb | "time" => DateTime.from_unix!(round(time * 10_000_000), 10_000_000)}
+        |> Map.delete("user_agent")
+        |> Map.put("editor", editor)
+        |> Map.put("operating_system", os)
+      end)
+
+    :ok = Ingester.insert_heartbeats(heartbeats)
+    send_resp(conn, 200, [])
+  end
+end

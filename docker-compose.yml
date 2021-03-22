@@ -1,0 +1,30 @@
+version: "3"
+services:
+  pg:
+    image: timescale/timescaledb:latest-pg11
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      # TODO backup
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - 5433:5432
+  grafana:
+    image: grafana/grafana:6.5.2
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=natel-discrete-panel
+    volumes:
+      - grafanadata:/var/lib/grafana
+  ingester:
+    build: .
+    restart: always
+    ports:
+      - 5000:5000
+volumes:
+  pgdata:
+  grafanadata:

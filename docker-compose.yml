@@ -1,7 +1,7 @@
 version: "3"
 services:
   pg:
-    image: timescale/timescaledb:latest-pg11
+    image: timescale/timescaledb:latest-pg13
     environment:
       - POSTGRES_PASSWORD=postgres
     volumes:
@@ -11,7 +11,7 @@ services:
     ports:
       - 5433:5432
   grafana:
-    image: grafana/grafana:7.5.0
+    image: grafana/grafana:7.5.3
     ports:
       - 3000:3000
     environment:

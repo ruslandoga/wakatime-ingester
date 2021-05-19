@@ -5,7 +5,7 @@ defmodule IngesterWeb.HeartbeatControllerTest do
   @entity "/Users/q/Developer/wakatime/ingester/test/ingester_web/controllers/heartbeat_controller_test.exs"
 
   describe "POST /api/heartbeats" do
-    test "with valid payload", %{conn: conn} do
+    test "with old valid payload", %{conn: conn} do
       conn =
         post(conn, "/api/heartbeats", %{
           "_json" => [
@@ -49,6 +49,117 @@ defmodule IngesterWeb.HeartbeatControllerTest do
              ] = Ingester.Repo.all(Ingester.Heartbeat)
     end
 
+    test "with new valid payload", %{conn: conn} do
+      conn =
+        post(conn, "/api/heartbeats", %{
+          "_json" => [
+            %{
+              "branch" => "fix-events-tz",
+              "category" => "coding",
+              "cursorpos" => nil,
+              "dependencies" => nil,
+              "entity" =>
+                "/Users/q/Developer/wakatime/ingester/test/ingester_web/controllers/heartbeat_controller_test.exs",
+              "is_write" => true,
+              "language" => "Elixir",
+              "lineno" => nil,
+              "lines" => 222,
+              "project" => "wako",
+              "time" => 1_621_430_715.381191,
+              "type" => "file",
+              "user_agent" =>
+                "wakatime/v1.6.0 (darwin-20.3.0-arm64) go1.16.4 \"vscode/1.57.0-insider vscode-wakatime/9.0.3\""
+            },
+            %{
+              "branch" => "dev",
+              "category" => "coding",
+              "cursorpos" => nil,
+              "dependencies" => nil,
+              "entity" => "/Users/q/Developer/wakatime/ingester/mix.exs",
+              "is_write" => nil,
+              "language" => "Elixir",
+              "lineno" => nil,
+              "lines" => 87,
+              "project" => "wako",
+              "time" => 1_621_347_601.841378,
+              "type" => "file",
+              "user_agent" =>
+                "wakatime/v1.6.0 (darwin-20.3.0-arm64) go1.16.4 \"vscode/1.57.0-insider vscode-wakatime/9.0.0\""
+            },
+            %{
+              "branch" => "dev",
+              "category" => "coding",
+              "cursorpos" => nil,
+              "dependencies" => nil,
+              "entity" => "/Users/q/Developer/wakatime/ingester/lib/ingester/application.ex",
+              "is_write" => nil,
+              "language" => "Elixir",
+              "lineno" => nil,
+              "lines" => 153,
+              "project" => "wako",
+              "time" => 1_621_347_951.1444328,
+              "type" => "file",
+              "user_agent" =>
+                "wakatime/v1.6.0 (darwin-20.3.0-arm64) go1.16.4 \"vscode/1.57.0-insider vscode-wakatime/9.0.0\""
+            }
+          ]
+        })
+
+      assert conn.status == 200
+
+      assert [
+               %Ingester.Heartbeat{
+                 branch: "fix-events-tz",
+                 category: "coding",
+                 cursorpos: nil,
+                 dependencies: nil,
+                 editor: "\"vscode/1.57.0-insider",
+                 entity:
+                   "/Users/q/Developer/wakatime/ingester/test/ingester_web/controllers/heartbeat_controller_test.exs",
+                 is_write: true,
+                 language: "Elixir",
+                 lineno: nil,
+                 lines: 222,
+                 operating_system: "darwin-20.3.0-arm64",
+                 project: "wako",
+                 time: ~U[2021-05-19 13:25:15Z],
+                 type: "file"
+               },
+               %Ingester.Heartbeat{
+                 branch: "dev",
+                 category: "coding",
+                 cursorpos: nil,
+                 dependencies: nil,
+                 editor: "\"vscode/1.57.0-insider",
+                 entity: "/Users/q/Developer/wakatime/ingester/mix.exs",
+                 is_write: false,
+                 language: "Elixir",
+                 lineno: nil,
+                 lines: 87,
+                 operating_system: "darwin-20.3.0-arm64",
+                 project: "wako",
+                 time: ~U[2021-05-18 14:20:01Z],
+                 type: "file"
+               },
+               %Ingester.Heartbeat{
+                 branch: "dev",
+                 category: "coding",
+                 cursorpos: nil,
+                 dependencies: nil,
+                 editor: "\"vscode/1.57.0-insider",
+                 entity: "/Users/q/Developer/wakatime/ingester/lib/ingester/application.ex",
+                 is_write: false,
+                 language: "Elixir",
+                 lineno: nil,
+                 lines: 153,
+                 operating_system: "darwin-20.3.0-arm64",
+                 project: "wako",
+                 time: ~U[2021-05-18 14:25:51Z],
+                 type: "file"
+               }
+             ] = Ingester.Repo.all(Ingester.Heartbeat)
+    end
+
     test "with invalid payload", %{conn: conn} do
       payload = %{"this" => "is", "invalid" => "payload"}
 
@@ -77,7 +188,7 @@ defmodule IngesterWeb.HeartbeatControllerTest do
       end
 
       assert_raise Postgrex.Error,
-                   ~r/null value in column "entity" violates not-null constraint/,
+                   ~r/violates not-null constraint/,
                    fn ->
                      post(conn, "/api/heartbeats", %{
                        "_json" => [%{"time" => 123, "user_agent" => @user_agent}]
@@ -85,7 +196,7 @@ defmodule IngesterWeb.HeartbeatControllerTest do
                    end
 
       assert_raise Postgrex.Error,
-                   ~r/null value in column "type" violates not-null constraint/,
+                   ~r/violates not-null constraint/,
                    fn ->
                      post(conn, "/api/heartbeats", %{
                        "_json" => [

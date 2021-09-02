@@ -11,7 +11,7 @@ defmodule Ingester.Repo.Migrations.AddHeartbeats do
       add :branch, :string
       add :language, :string
       add :dependencies, {:array, :string}
-      add :lines, :integer, null: false
+      add :lines, :integer
       add :lineno, :integer
       add :cursorpos, :integer
       add :is_write, :boolean, null: false, default: false

@@ -7,9 +7,11 @@ defmodule IngesterWeb.Router do
 
   scope "/", IngesterWeb do
     pipe_through :api
+
     post "/heartbeats", HeartbeatController, :create
     post "/heartbeats/v1/users/current/heartbeats.bulk", HeartbeatController, :create
     post "/users/current/heartbeats.bulk", HeartbeatController, :create
+    post "/plugins/errors", IgnoreController, :ignore
   end
 
   # Enables LiveDashboard only for development

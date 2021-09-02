@@ -27,7 +27,7 @@ defmodule IngesterWeb.HeartbeatControllerTest do
           ]
         })
 
-      assert conn.status == 200
+      assert conn.status == 201
 
       assert [
                %Ingester.Heartbeat{
@@ -105,7 +105,7 @@ defmodule IngesterWeb.HeartbeatControllerTest do
           ]
         })
 
-      assert conn.status == 200
+      assert conn.status == 201
 
       assert [
                %Ingester.Heartbeat{

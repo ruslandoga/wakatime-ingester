@@ -45,7 +45,7 @@ CREATE TABLE public.heartbeats (
     branch character varying(255),
     language character varying(255),
     dependencies character varying(255)[],
-    lines integer NOT NULL,
+    lines integer,
     lineno integer,
     cursorpos integer,
     is_write boolean DEFAULT false NOT NULL,

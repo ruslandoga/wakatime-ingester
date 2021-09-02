@@ -4,10 +4,10 @@ defmodule IngesterWeb.HeartbeatControllerTest do
   @user_agent "wakatime/13.0.3 (Darwin-18.7.0-x86_64-i386-64bit) Python3.7.5.final.0 vscode/1.42.0-insider vscode-wakatime/2.2.1"
   @entity "/Users/q/Developer/wakatime/ingester/test/ingester_web/controllers/heartbeat_controller_test.exs"
 
-  describe "POST /api/heartbeats" do
+  describe "POST /heartbeats" do
     test "with old valid payload", %{conn: conn} do
       conn =
-        post(conn, "/api/heartbeats", %{
+        post(conn, "/heartbeats", %{
           "_json" => [
             %{
               "branch" => "master",
@@ -51,7 +51,7 @@ defmodule IngesterWeb.HeartbeatControllerTest do
 
     test "with new valid payload", %{conn: conn} do
       conn =
-        post(conn, "/api/heartbeats", %{
+        post(conn, "/heartbeats", %{
           "_json" => [
             %{
               "branch" => "fix-events-tz",
@@ -164,25 +164,25 @@ defmodule IngesterWeb.HeartbeatControllerTest do
       payload = %{"this" => "is", "invalid" => "payload"}
 
       assert_raise Phoenix.ActionClauseError, fn ->
-        post(conn, "/api/heartbeats", payload)
+        post(conn, "/heartbeats", payload)
       end
 
       assert_raise FunctionClauseError, fn ->
-        post(conn, "/api/heartbeats", %{"_json" => payload})
+        post(conn, "/heartbeats", %{"_json" => payload})
       end
 
       assert_raise FunctionClauseError, fn ->
-        post(conn, "/api/heartbeats", %{"_json" => [payload]})
+        post(conn, "/heartbeats", %{"_json" => [payload]})
       end
 
       assert_raise MatchError, fn ->
-        post(conn, "/api/heartbeats", %{
+        post(conn, "/heartbeats", %{
           "_json" => [%{"time" => "not a number", "user_agent" => "not a user agent"}]
         })
       end
 
       assert_raise ArithmeticError, fn ->
-        post(conn, "/api/heartbeats", %{
+        post(conn, "/heartbeats", %{
           "_json" => [%{"time" => "not a number", "user_agent" => @user_agent}]
         })
       end
@@ -190,7 +190,7 @@ defmodule IngesterWeb.HeartbeatControllerTest do
       assert_raise Postgrex.Error,
                    ~r/violates not-null constraint/,
                    fn ->
-                     post(conn, "/api/heartbeats", %{
+                     post(conn, "/heartbeats", %{
                        "_json" => [%{"time" => 123, "user_agent" => @user_agent}]
                      })
                    end
@@ -198,7 +198,7 @@ defmodule IngesterWeb.HeartbeatControllerTest do
       assert_raise Postgrex.Error,
                    ~r/violates not-null constraint/,
                    fn ->
-                     post(conn, "/api/heartbeats", %{
+                     post(conn, "/heartbeats", %{
                        "_json" => [
                          %{"time" => 123, "user_agent" => @user_agent, "entity" => @entity}
                        ]

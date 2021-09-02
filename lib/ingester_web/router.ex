@@ -5,7 +5,7 @@ defmodule IngesterWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", IngesterWeb do
+  scope "/", IngesterWeb do
     pipe_through :api
     post "/heartbeats", HeartbeatController, :create
     post "/heartbeats/v1/users/current/heartbeats.bulk", HeartbeatController, :create

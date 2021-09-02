@@ -3,13 +3,9 @@ import Config
 if config_env() in [:dev, :prod] do
   # Configure your database
   config :ingester, Ingester.Repo,
-    username: "postgres",
-    password: "postgres",
-    database: "db2",
-    hostname: "localhost",
-    port: 5433,
+    url: System.get_env("DATABASE_URL") || "ecto://postgres:postgres@localhost:5433/db2",
     show_sensitive_data_on_connection_error: true,
-    pool_size: 10
+    pool_size: 3
 
   config :ingester, IngesterWeb.Endpoint,
     http: [port: 5000],
